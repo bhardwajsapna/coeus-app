@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
 //MonthReading welcomeFromJson(String str) => MonthReading.fromJson(json.decode(str));
 
 MonthReading convertJsonToTemp(String str) =>
     MonthReading.fromJson(json.decode(str));
 
-String welcomeToJson(MonthReading data) => json.encode(data.toJson());
+String convertTempToJson(MonthReading data) => json.encode(data.toJson());
 
 class MonthReading {
   MonthReading({
@@ -22,6 +24,25 @@ class MonthReading {
   Map<String, dynamic> toJson() => {
         "readValues": List<dynamic>.from(tempValues.map((x) => x.toJson())),
       };
+
+  updateJsonTempData(date, time, value) {
+    if (date == "") {
+      return;
+    }
+    debugPrint(
+        this.tempValues[this.tempValues.length - 1].sampleDate.toString());
+
+    if (this.tempValues[this.tempValues.length - 1].sampleDate == date) {
+      this
+          .tempValues[this.tempValues.length - 1]
+          .samples
+          .add(Sample(time: time, temp: value));
+    } else {
+      DayReading todayReading = new DayReading(
+          sampleDate: date, samples: [Sample(time: time, temp: value)]);
+      this.tempValues.add(todayReading);
+    }
+  }
 }
 
 class DayReading {

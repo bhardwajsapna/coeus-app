@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:coeus_v1/services/api.dart';
+import 'package:coeus_v1/utils/const.dart';
 import 'package:coeus_v1/utils/user_secure_storage.dart';
 import 'package:coeus_v1/widget/button.dart';
 import 'package:coeus_v1/widget/date_picker.dart';
@@ -70,7 +71,7 @@ class _NewUserState extends State<NewUser> {
     response = createUserAPIService(requestParams);
     print(response);
 
-    Fluttertoast.showToast(
+    /* Fluttertoast.showToast(
         msg: response.toString(),
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
@@ -78,7 +79,7 @@ class _NewUserState extends State<NewUser> {
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0);
-
+*/
     return response;
   }
 
@@ -101,6 +102,18 @@ class _NewUserState extends State<NewUser> {
 
       createUserService().then((response) {
         print(response.statusCode);
+
+        /* Fluttertoast.showToast(
+            msg: "reponse" +
+                response.body.toString() +
+                " / " +
+                response.statusCode.toString(),
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+*/
+
         var jsonresponse = jsonDecode(response.body);
         if (response.statusCode == 200) {
           UserSecureStorage.setEmailId(controllerUserName.text);
@@ -112,7 +125,17 @@ class _NewUserState extends State<NewUser> {
           //29 aug 21 - sreeni added the dob
           UserSecureStorage.setDOB(DateTime.parse(controllerDob.text));
           //25 oct 21 - sapna - userid added
+          //   if (Constants.gotoServer) {
           UserSecureStorage.setUserID(jsonresponse['id']);
+          //  }
+          Fluttertoast.showToast(
+              msg: "user created",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
           Navigator.pop(context);
         }
       });

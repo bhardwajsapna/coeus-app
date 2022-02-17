@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:coeus_v1/components/summary_card.dart';
+import 'package:coeus_v1/models/TempValue.dart';
+import 'package:coeus_v1/services/bleServices.dart';
+import 'package:coeus_v1/utils/Data_utils.dart';
 import 'package:coeus_v1/utils/const.dart';
 import 'package:coeus_v1/utils/dashboard_secure_storage.dart';
 import 'package:coeus_v1/utils/user_secure_storage.dart';
@@ -10,8 +13,15 @@ import 'package:coeus_v1/widget/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+
+// this csv can be removed for production.
+import 'package:csv/csv.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -28,10 +38,97 @@ class _HomePageState extends State<HomePage> {
   double temperature = 0;
   int spo2 = 0;
   String username = "User";
+
+  var sensorData = [];
+
   @override
   void initState() {
     super.initState();
     init();
+  }
+
+  updateJson(_listData) async {
+// 03 feb for testing from csv data provided by sriharsha on 02 feb
+    /*  String filepath = 'assets/sensor_data_log.csv';
+    final input = await rootBundle.loadString(filepath);
+
+    List<List<dynamic>> _listData = CsvToListConverter().convert(input);
+*/
+    // debugPrint(_listData.toString());
+    num temp1 = 0;
+    num hr = 0;
+    num spo = 0;
+    num sampleTime = 0;
+    DateTime sampleDate;
+    String fileDate = "";
+    String fileTime = "";
+    _listData.forEach((element) {
+      temp1 = temp1 + element[11];
+      hr = hr + element[12];
+      spo = spo + element[16];
+
+      //(int.tryParse(element[11]) ?? 0);
+      // temp = temp + double.parse(element[12]);
+    });
+
+    temp1 = temp1 / _listData.length;
+    hr = hr / _listData.length;
+    spo = spo / _listData.length;
+    sampleTime = _listData[_listData.length - 1][0];
+
+    setState(() {
+      this.heartrate = hr.toInt();
+      this.spo2 = spo.toInt();
+      this.temperature = temp1.toDouble();
+
+      sampleDate =
+          DateTime.fromMillisecondsSinceEpoch(sampleTime.toInt() * 1000);
+      // debugPrint(sampleDate.toString() + " sample date");
+      fileDate = DateFormat('dd-MM-yyyy').format(sampleDate);
+      //debugPrint(fileDate.toString() + "file date");
+
+      fileTime = DateFormat('HH-mm').format(sampleDate);
+    });
+
+/*updating the temp file . similarly we need to do for rest 
+*/
+    // Retrieve "External Storage Directory" for Android and "NSApplicationSupportDirectory" for iOS
+    Directory? directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationSupportDirectory();
+    print("dir path" + directory.toString());
+    //String fileName = "tempRecords.json";
+    String filePath = "${directory!.path}/tempRecords.json";
+    //  var fileName = 'assets/tempRecords.json';
+    var tempFile = File(filePath);
+
+    final String jsonString = await tempFile.readAsString();
+    // await rootBundle.loadString(fileName);
+
+    var fileData = convertJsonToTemp(jsonString);
+
+    // if we pass these values to the function we cannot access the content of file in the class
+    //we need to do the logic here.
+    // we can discuss on this 08 feb 22 - sreeni
+
+    fileData.updateJsonTempData(fileDate, fileTime, this.temperature.toInt());
+
+    var tempJson = convertTempToJson(fileData);
+    debugPrint(fileData.tempValues[30].sampleDate.toString() + " here");
+    debugPrint("after convert temp to json");
+    //final Directory directory =
+    //    await getApplicationDocumentsDirectory();
+    // try {
+    //final File file = File('assets/tempRecords.json');
+    await tempFile.writeAsString(tempJson);
+    /* } on Exception catch (_) {
+                  debugPrint("problem in file opening");
+                }
+*/
+    //
+
+    debugPrint("present file contents are ");
+    debugPrint(fileData.toString());
   }
 
   Future init() async {
@@ -51,6 +148,8 @@ class _HomePageState extends State<HomePage> {
       this.temperature = temperature;
       this.username = username;
     });
+
+    //   debugPrint("every time or one time");
   }
 
   callAPI() {
@@ -272,7 +371,40 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             child: InkWell(
-              onTap: () => {},
+              onTap: () async {
+                if (Constants.bleDevice != null) {
+                  // this above async and below await will ensure that intiateBLEdata function called and finished
+                  // and then readsensordata will be called.
+                  await initiateBLEData('110');
+                  Fluttertoast.showToast(msg: "data transfer initiated at 110");
+                  Fluttertoast.showToast(msg: "ready for data reception");
+                  sensorData = await readSensorsData('201');
+                  //process data
+                  print(sensorData.toString());
+                  print("above the read data from sensor");
+
+                  //processing
+                  sensorData = Data_utils.rawToProcessed(sensorData);
+
+                  // update the screen
+                  Data_utils.updateLocal(sensorData);
+
+                  updateJson(
+                      sensorData); // is to update the json file not complete yet.
+
+                  // update the local files
+                  // upload the data to server
+
+                  Fluttertoast.showToast(msg: "data reception completed");
+                  Fluttertoast.showToast(msg: sensorData.toString());
+                } else {
+                  Fluttertoast.showToast(
+                      msg: "Kindly connect the App with Device",
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+              },
               child: Container(
                 padding: EdgeInsets.all(15.0),
                 width: MediaQuery.of(context).size.width * 0.95,

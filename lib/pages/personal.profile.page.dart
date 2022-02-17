@@ -152,7 +152,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(1940),
-            lastDate: DateTime(2022))
+            lastDate: DateTime(2022)) // current year and not hardcoding
         .then((pickedDate) => {
               if (pickedDate != null)
                 {

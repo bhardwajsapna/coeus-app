@@ -34,8 +34,6 @@ dependencies:
   flutter_secure_storage: ^4.1.0
   provider: ^5.0.0
   shared_preferences: ^2.0.6
-  flutter_bluetooth_serial: ^0.4.0
-  flutter_blue: ^0.8.0
   string_validator: ^0.3.0
   http: ^0.13.3
   email_validator: ^2.0.1
@@ -45,6 +43,9 @@ dependencies:
   dio: ^4.0.4
   path_provider: ^2.0.3
   flutter_nordic_dfu: ^3.0.0
+  flutter_reactive_ble: ^4.0.0
+  location_permissions: ^4.0.0
+  csv: ^5.0.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,8 @@ flutter:
     - assets/dfu_application_0.zip
     - assets/dfu_application_0u.zip
     - assets/dfu_application_0d.zip
+    - assets/sensor_data_log.csv
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

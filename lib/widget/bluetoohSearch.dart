@@ -1,51 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+//import 'package:flutter_blue/flutter_blue.dart';
 
 
 class BluetoothDeviceListEntry extends ListTile {
   BluetoothDeviceListEntry({
-    required BluetoothDevice device,
+    required DiscoveredDevice device,
     int? rssi,
     GestureTapCallback? onTap,
     GestureLongPressCallback? onLongPress,
     bool enabled = true,
   }) : super(
-    onTap: onTap,
-    onLongPress: onLongPress,
-    enabled: enabled,
-    leading:
-    Icon(Icons.devices), // @TODO . !BluetoothClass! class aware icon
-    title: Text(device.name!),
-    subtitle: Text(device.id.toString()),
-    trailing: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        rssi != null
-            ? Container(
-          margin: new EdgeInsets.all(8.0),
-          child: DefaultTextStyle(
-            style: _computeTextStyle(rssi),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(rssi.toString()),
-                Text('dBm'),
-              ],
-            ),
+          onTap: onTap,
+          onLongPress: onLongPress,
+          enabled: enabled,
+          leading:
+              Icon(Icons.devices), // @TODO . !BluetoothClass! class aware icon
+          title: Text(device.name),
+          subtitle: Text(device.id.toString()),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              rssi != null
+                  ? Container(
+                      margin: new EdgeInsets.all(8.0),
+                      child: DefaultTextStyle(
+                        style: _computeTextStyle(rssi),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(rssi.toString()),
+                            Text('dBm'),
+                          ],
+                        ),
+                      ),
+                    )
+                  : Container(width: 0, height: 0),
+              // device.isConnected
+              //     ? Icon(Icons.import_export)
+              //     : Container(width: 0, height: 0),
+              // device.isBonded
+              //     ? Icon(Icons.link)
+              //     : Container(width: 0, height: 0),
+            ],
           ),
-        )
-            : Container(width: 0, height: 0),
-        // device.isConnected
-        //     ? Icon(Icons.import_export)
-        //     : Container(width: 0, height: 0),
-        // device.isBonded
-        //     ? Icon(Icons.link)
-        //     : Container(width: 0, height: 0),
-      ],
-    ),
-  );
+        );
 
   static TextStyle _computeTextStyle(int rssi) {
     /**/ if (rssi >= -35)

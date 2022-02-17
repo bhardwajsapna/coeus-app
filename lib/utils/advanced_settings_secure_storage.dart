@@ -1,4 +1,6 @@
 //https://github.com/JohannesMilke/secure_storage_example/blob/master/lib/utils/user_secure_storage.dart
+import 'dart:typed_data';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AdvancedSettingsSecureStorage {
