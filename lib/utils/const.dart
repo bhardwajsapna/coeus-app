@@ -78,6 +78,8 @@ List of services for BLE communication
   // 16 jan 22 -  discuss with quanti on change of this, as the read and write logic at ble has changed, this would be more apt.
   static String character107 = "107"; // "97fe0107-9e89-00ec-2371-2a2ea5b4d546";
   static String character108 = "108"; //"97fe0108-9e89-00ec-2371-2a2ea5b4d546";
+//22 mar 22 - discussed with sriharsha
+  static String character113 = "113"; // this is for battery charge reading
 
   static String character200 = "97fe0200-9e89-40ec-a371-2a2ea5b4d546";
   static String character201 = "97fe0201-9e89-40ec-a371-2a2ea5b4d546";

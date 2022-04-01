@@ -22,7 +22,9 @@ class _DeviceInfoProfilePageState extends State<DeviceInfoProfilePage> {
   List bledata = [];
   bool isReading = false;
   @override
-  void initState() {}
+  void initState() {
+    readDeviceInfo();
+  }
 
   buttonOK() {
     Navigator.pop(context);
@@ -44,21 +46,28 @@ class _DeviceInfoProfilePageState extends State<DeviceInfoProfilePage> {
         fontSize: 16.0);
   }
 
-  readDeviceInfo() {
-    // amended on 16 jan with new lib and services
-    var tempVal = readBLEData("100", "103");
+  readDeviceInfo() async {
+    displayOnScreen("welcome to device info"); //);
 
-    displayOnScreen("tempval data is " + tempVal.toString()); //);
+    // amended on 16 jan with new lib and services
+    var tempVal1 = await readBLEData("100", "103");
+
+    displayOnScreen("tempval data is " + tempVal1.toString()); //);
     //21 oct 21
-    firmware_version = tempVal.toString();
+    firmware_version = tempVal1.toString();
     displayOnScreen('firmware ver :  $firmware_version');
 
-    tempVal = readBLEData("100", "104");
+    var tempVal2 = await readBLEData("100", "104");
 
-    displayOnScreen("tempval data is " + tempVal.toString()); //);
+    displayOnScreen("tempval data is " + tempVal2.toString()); //);
     //21 oct 21
-    software_version = tempVal.toString();
+    software_version = tempVal2.toString();
     displayOnScreen('software ver :  $software_version');
+
+    setState(() {
+      this.software_version = tempVal2.toString();
+      this.firmware_version = tempVal1.toString();
+    });
   }
 
   @override

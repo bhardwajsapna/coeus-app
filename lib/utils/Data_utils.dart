@@ -5,8 +5,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:coeus_v1/models/TempValue.dart';
 import 'package:coeus_v1/models/sensorsData.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
+
+import 'dashboard_secure_storage.dart';
 
 class Data_utils {
   static int byte8toInt(List<int> givenList) {
@@ -119,5 +126,37 @@ class Data_utils {
     // await rootBundle.loadString(fileName);
 
     // var fileData = (jsonString);
+  }
+
+  static updateLocalJson(var givenDT) async {
+    var fileName = 'assets/tempRecords.json';
+    var givenDate = givenDT.toString().split(" ")[0];
+    var givenTime = givenDT.toString().split(" ")[1];
+
+    var tempFile = File(fileName);
+
+    String jsonData = await rootBundle.loadString(fileName);
+    debugPrint("------------");
+    debugPrint(givenDT);
+    // debugPrint(jsonData);
+    // setState(() {
+    var tempData = convertJsonToTemp(jsonData);
+    debugPrint(tempData.tempValues[tempData.tempValues.length - 1].sampleDate);
+    debugPrint(givenDate + " ----> " + givenTime);
+    if (tempData.tempValues[tempData.tempValues.length - 1].sampleDate ==
+        givenDate) {
+      debugPrint("date present so add sample");
+    } else {
+      debugPrint("add date and then sample");
+      var tempValue = await DashboardSecureStorage.getTemperature();
+
+      tempData.updateJsonTempData(givenDate, givenTime, tempValue.toInt());
+
+      var updateJson = convertTempToJson(tempData);
+
+      await tempFile.writeAsString(updateJson.toString());
+    }
+
+    Fluttertoast.showToast(msg: tempData.tempValues.toString());
   }
 }

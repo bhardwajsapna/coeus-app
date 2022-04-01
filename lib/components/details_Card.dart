@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:coeus_v1/models/BioValues.dart';
 import 'package:coeus_v1/models/TempValue.dart';
@@ -11,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:async';
 
@@ -41,15 +44,25 @@ class _Detailed_CardState extends State<Detailed_Card> {
   int ndays = 7;
   int minY = 0;
   int maxY = 0;
-
+  String baseDir = "";
   Future loadDataFromJson() async {}
 
   Future loadSensorData(int days) async {
+/*add on 27 mar while moving file from asset to directory
+*/
+    Directory? directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationSupportDirectory();
+
+    baseDir = "${directory!.path}"; //"assets"; //${directory!.path}";
+
     /*
     22 aug - check the button which has called this page. Accordingly the file will be called.
     should graph show 1 day or 1 month.?  
     */
     final String jsonString = await getJsonFromAssets();
+
+    debugPrint("Data is " + jsonString);
 
     chartData = convertJsonToTemp(jsonString);
 
@@ -75,63 +88,87 @@ class _Detailed_CardState extends State<Detailed_Card> {
     String fileName = "";
     switch (widget.title) {
       case "Temperature":
-        fileName = 'assets/tempRecords.json';
+        fileName = baseDir + '/tempRecords.json';
         break;
       case "SpO2":
-        fileName = 'assets/spo2Records.json';
+        fileName = baseDir + '/spo2Records.json';
         break;
       case "Heart Rate":
-        fileName = 'assets/bpmRecords.json';
+        fileName = baseDir + '/bpmRecords.json';
         break;
       case "ECG":
-        fileName = 'assets/tempRecords.json';
+        fileName = baseDir + '/tempRecords.json';
         break;
       case "Footsteps":
       case "Sleep":
-        fileName = 'assets/stepsSleepRecords.json';
+        fileName = baseDir + '/stepsSleepRecords.json';
         break;
 
       default:
-        fileName = 'assets/tempRecords.json';
+        fileName = baseDir + '/tempRecords.json';
     }
-    return await rootBundle.loadString(fileName);
+    File jsonFile = new File(fileName);
+    // 27 mar - reading file data from dir
+    debugPrint(fileName);
+    //   debugPrint(jsonFile.readAsStringSync());
+    //   return jsonFile.readAsStringSync();
+//   readin file data from assets
+    return (await jsonFile.readAsString());
+
+    //return await rootBundle.loadString(fileName);
   }
 
   dynamic render_chart(int ndays) async {
+   Directory? directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationSupportDirectory();
+
+    //baseDir = "assets";
+    baseDir = "${directory!.path}";
+    
     if (true) {
       //(isfirstLoading) {
       String fileName = "";
       switch (widget.title) {
         case "Temperature":
-          fileName = 'assets/tempRecords.json';
+          fileName = baseDir + '/tempRecords.json';
           minY = 25;
           maxY = 50;
           break;
         case "SpO2":
-          fileName = 'assets/spo2Records.json';
+          fileName = baseDir + '/spo2Records.json';
           minY = 50;
           maxY = 100;
 
           break;
         case "Heart Rate":
-          fileName = 'assets/bpmRecords.json';
+          fileName = baseDir + '/bpmRecords.json';
           minY = 50;
           maxY = 140;
 
           break;
         case "ECG":
-          fileName = 'assets/tempRecords.json';
+          fileName = baseDir + '/tempRecords.json';
           break;
         default:
-          fileName = 'assets/tempRecords.json';
+          fileName = baseDir + '/tempRecords.json';
       }
-      String jsonData = await rootBundle.loadString(fileName);
+      
+     // String jsonData = await rootBundle.loadString(fileName);
+      
+      // 27 mar - reading file data from dir
+      debugPrint(fileName + " n days =" + ndays.toString());
+      File jsonFile = new File(fileName);
+      //   readin file data from file struct
+      String jsonData = await jsonFile.readAsString();
+
       // setState(() {
       chartData = convertJsonToTemp(jsonData);
       isfirstLoading = false;
       // });
     }
-    // setState(() {
+    
+   // setState(() {
     seriesList = [];
     seriesList.add(new charts.Series<Sensor, int>(
       id: 'LineGraph',
@@ -160,8 +197,51 @@ class _Detailed_CardState extends State<Detailed_Card> {
 
   List<Sensor> get_data(int days) {
     List<Sensor> l = [];
+    debugPrint("in get_data");
+/*
+1.  user has given ndays.
+2.  file may have less or more data than days given.
+3.  check the quantity of data available in chartdata ( it contains max data from file)
+4.  provide the max data graph depending on availability and ndays 
+    ie.
+    if we have 3 days of data and user asked for 7 days or 15 days or 30 days 
+        provide for 3 days.
+    if we have enough data as asked then provide what ever has been asked for.
+
+    if there is no data then provide appropriate msg to user.
+5.  this has to be done for both max and min reading of data
+6.  Graph should display the data as provided here.
+*/
+
+    var startIndex = 0;
+    var endIndex = 0;
+    var chartDataLen = chartData!.tempValues.length;
+    debugPrint("chart data len" + chartDataLen.toString());
+    if (chartDataLen >= days) {
+      startIndex = chartDataLen - days;
+      endIndex = chartDataLen;
+    } else {
+      startIndex = 0;
+      endIndex = chartDataLen;
+    }
+    for (int i = startIndex; i < endIndex; i++) {
+      final data = chartData!.tempValues[i];
+
+      int max = 0;
+      debugPrint("data samples" + data.samples.length.toString());
+      if (data.samples != null && data.samples.isNotEmpty) {
+        data.samples.sort((a, b) => a.temp.compareTo(b.temp));
+        max = data.samples.last.temp;
+      }
+      l.add(Sensor(value: max, point: i - startIndex + 1));
+
+      debugPrint(l.length.toString() +
+          (i - startIndex + 1).toString() +
+          " is the length of max debug");
+    }
+
     // changes made for fixing the graph min an max bug - 22 oct 21
-    for (int i = math.max(0, chartData!.tempValues.length - days);
+    /*  for (int i = math.max(0, chartData!.tempValues.length - days);
         i < chartData!.tempValues.length;
         i++) {
       final data = chartData!.tempValues[i];
@@ -173,12 +253,38 @@ class _Detailed_CardState extends State<Detailed_Card> {
 
       l.add(Sensor(value: max, point: 30 - i));
       print(l.length);
-    }
+    }*/
     return l;
   }
 
   List<Sensor> get_dataMin(int days) {
     List<Sensor> l = [];
+    debugPrint("in get data min");
+    var startIndex = 0;
+    var endIndex = 0;
+    var chartDataLen = chartData!.tempValues.length;
+    if (chartDataLen >= days) {
+      startIndex = chartDataLen - days;
+      endIndex = chartDataLen;
+    } else {
+      startIndex = 0;
+      endIndex = chartDataLen;
+    }
+
+    for (int i = startIndex; i < endIndex; i++) {
+      final data = chartData!.tempValues[i];
+      int min = 0;
+      if (data.samples != null && data.samples.isNotEmpty) {
+        data.samples.sort((a, b) => a.temp.compareTo(b.temp));
+        min = data.samples.first.temp;
+      }
+
+      l.add(Sensor(value: min, point: i - startIndex + 1));
+      debugPrint(l.length.toString() +
+          (i - startIndex + 1).toString() +
+          " is min data return");
+    }
+/*
     for (int i = math.max(0, chartData!.tempValues.length - days);
         i < chartData!.tempValues.length;
         i++) {
@@ -191,6 +297,7 @@ class _Detailed_CardState extends State<Detailed_Card> {
       l.add(Sensor(value: min, point: 30 - i));
       print(l.length);
     }
+    */
     return l;
   }
 

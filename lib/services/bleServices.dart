@@ -56,7 +56,10 @@ writeBLE_List_Data_service_100(List<int> data, String characteristic_given) {
 //this is called when the app gets connected to device and also button press in test app
 writeISTEpochTime() {
   DateTime now = DateTime.now();
-  String time_now = (((now.millisecondsSinceEpoch) / 1000)).toStringAsFixed(0);
+  String time_now =
+      (((now.millisecondsSinceEpoch + now.timeZoneOffset.inMilliseconds) /
+              1000))
+          .toStringAsFixed(0);
   print("time_now:" + time_now);
   writeBLE_String_Data_service_100(time_now, '112');
 }
@@ -102,6 +105,13 @@ Future<List<int>> readBLEData(
 
   // debugPrint("temp val == " + response.toString());
   return response;
+}
+
+//22 mar 22 - for reading the battery charge
+readBatteryCharge() {
+  final value = readBLEData("100", Constants.character113);
+
+  return (value);
 }
 
 readSensorsData(characteristic_given) async {

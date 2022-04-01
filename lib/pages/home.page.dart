@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   double temperature = 0;
   int spo2 = 0;
   String username = "User";
-
+  String lastSampleDT = "November-04,2021  02:30 AM";
   var sensorData = [];
 
   @override
@@ -49,11 +49,17 @@ class _HomePageState extends State<HomePage> {
 
   updateJson(_listData) async {
 // 03 feb for testing from csv data provided by sriharsha on 02 feb
-    /*  String filepath = 'assets/sensor_data_log.csv';
+// if data has to be read from file and displayed on the screen then this has to be uncommented
+// if data  to be taken from the sensor and displayed on the screen then comment this portion till
+// _listData
+
+    /*   debugPrint("reached updateJson");
+    String filepath = 'assets/sensor_data_log.csv';
     final input = await rootBundle.loadString(filepath);
 
     List<List<dynamic>> _listData = CsvToListConverter().convert(input);
 */
+//--------------------------------------------------
     // debugPrint(_listData.toString());
     num temp1 = 0;
     num hr = 0;
@@ -63,7 +69,8 @@ class _HomePageState extends State<HomePage> {
     String fileDate = "";
     String fileTime = "";
     _listData.forEach((element) {
-      temp1 = temp1 + element[11];
+      temp1 = temp1 + (element[11] * 0.005); // on 22 mar 22
+
       hr = hr + element[12];
       spo = spo + element[16];
 
@@ -79,20 +86,39 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       this.heartrate = hr.toInt();
       this.spo2 = spo.toInt();
-      this.temperature = temp1.toDouble();
+      // 22 mar 22 - rounded the temp as this was giving the floating number
+      // below line for deg celcius
+      this.temperature = (temp1.round()).toDouble();
+      // now converting to deg fahrenheit
+      this.temperature =
+          (((this.temperature * (9 / 5)) + 32).round()).toDouble();
 
-      sampleDate =
-          DateTime.fromMillisecondsSinceEpoch(sampleTime.toInt() * 1000);
+//24 mar 22 - removing the multiplication factor 1000 as
+      DateTime now = DateTime.now();
+      sampleDate = DateTime.fromMillisecondsSinceEpoch(sampleTime.toInt() -
+          int.parse(now.timeZoneOffset.inMilliseconds.toString())); // * 1000);
+
       // debugPrint(sampleDate.toString() + " sample date");
       fileDate = DateFormat('dd-MM-yyyy').format(sampleDate);
       //debugPrint(fileDate.toString() + "file date");
 
       fileTime = DateFormat('HH-mm').format(sampleDate);
+      //20 feb 22 - this is to update the refresh button.
+      this.lastSampleDT = fileDate.toString() + " " + fileTime.toString();
     });
+
+    // 23 mar 22 - update local storage so that same can be used while app is opened next time
+    // same can also be used updating the json files for each of the parameter.
+    await DashboardSecureStorage.setHeartRate(this.heartrate);
+    await DashboardSecureStorage.setSpO2(this.spo2);
+    await DashboardSecureStorage.setTemperature(this.temperature);
 
 /*updating the temp file . similarly we need to do for rest 
 */
     // Retrieve "External Storage Directory" for Android and "NSApplicationSupportDirectory" for iOS
+/*
+    Directory? interDire = Platform.isAndroid ? await getFilesDir() : null;
+
     Directory? directory = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationSupportDirectory();
@@ -129,6 +155,7 @@ class _HomePageState extends State<HomePage> {
 
     debugPrint("present file contents are ");
     debugPrint(fileData.toString());
+    */
   }
 
   Future init() async {
@@ -139,6 +166,7 @@ class _HomePageState extends State<HomePage> {
     heartrate = await DashboardSecureStorage.getHeartRate();
     spo2 = await DashboardSecureStorage.getSpO2();
     temperature = await DashboardSecureStorage.getTemperature();
+
     setState(() {
       this.batteryValue = batteryValue;
       this.footsteps = footsteps;
@@ -149,7 +177,7 @@ class _HomePageState extends State<HomePage> {
       this.username = username;
     });
 
-    //   debugPrint("every time or one time");
+    debugPrint("every time or one time");
   }
 
   callAPI() {
@@ -292,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                         image: AssetImage('assets/icons/temperature.png'),
                         title: "Temperature",
                         value: this.temperature.toString(),
-                        unit: "˚C",
+                        unit: "˚F",
                         color: Constants.greendull),
                     SizedBox(width: 10),
                     Container(
@@ -307,50 +335,72 @@ class _HomePageState extends State<HomePage> {
                         shape: BoxShape.rectangle,
                         color: Constants.dull_move,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            "Battery",
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Constants.textDark,
-                              // fontWeight: FontWeight.w900,
+                      child: InkWell(
+                        onTap: () async {
+                          Fluttertoast.showToast(
+                            msg: "Battery Charge clicked",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                          var tempBattery =
+                              await readBLEData("100", Constants.character113);
+                          // readBatteryCharge();
+                          setState(() {
+                            this.batteryValue = tempBattery[0];
+                          });
+                          Fluttertoast.showToast(
+                            msg: "Battery Charge " +
+                                tempBattery.toString() +
+                                "***",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              "Battery",
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Constants.textDark,
+                                // fontWeight: FontWeight.w900,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          // CircularPercentIndicator(
-                          //   radius: 60.0,
-                          //   lineWidth: 5.0,
-                          //   //21 oct 21
-                          //   percent: batteryValue / 100,
-                          //   center: new Text(batteryValue.toString()),
-                          //   progressColor: Colors.black,
-                          // )
-                          LinearPercentIndicator(
-                            width: MediaQuery.of(context).size.width / 3,
-                            animation: true,
-                            lineHeight: 20.0,
-                            animationDuration: 2500,
-                            percent: batteryValue / 100,
-                            center: Text(""),
-                            linearStrokeCap: LinearStrokeCap.roundAll,
-                            progressColor: Colors.brown.shade300,
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "$batteryValue%",
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Constants.textDark,
-                              // fontWeight: FontWeight.w900,
+                            SizedBox(
+                              height: 5,
                             ),
-                          ),
-                        ],
+                            LinearPercentIndicator(
+                              width: MediaQuery.of(context).size.width / 3,
+                              animation: true,
+                              lineHeight: 20.0,
+                              animationDuration: 2500,
+                              percent: batteryValue / 100,
+                              center: Text(""),
+                              linearStrokeCap: LinearStrokeCap.roundAll,
+                              progressColor: Colors.brown.shade300,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "$batteryValue%",
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Constants.textDark,
+                                // fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -372,6 +422,12 @@ class _HomePageState extends State<HomePage> {
           Container(
             child: InkWell(
               onTap: () async {
+                /*to read from file and update on the screen enable only the updatejson(sensordata)
+                and comment the if statement
+                */
+                //  updateJson(sensorData);
+                //  Data_utils.updateLocalJson(this.lastSampleDT);
+//------------------------------------------------------------
                 if (Constants.bleDevice != null) {
                   // this above async and below await will ensure that intiateBLEdata function called and finished
                   // and then readsensordata will be called.
@@ -379,6 +435,7 @@ class _HomePageState extends State<HomePage> {
                   Fluttertoast.showToast(msg: "data transfer initiated at 110");
                   Fluttertoast.showToast(msg: "ready for data reception");
                   sensorData = await readSensorsData('201');
+
                   //process data
                   print(sensorData.toString());
                   print("above the read data from sensor");
@@ -386,14 +443,19 @@ class _HomePageState extends State<HomePage> {
                   //processing
                   sensorData = Data_utils.rawToProcessed(sensorData);
 
+                  updateJson(
+                      sensorData); // is to update the json file not complete yet.
+                  // 23 mar 22 - below function will update the temp, spo2 and heart rate json file of assets
+                  // so that same can be shown on graphs. Data will be taken from dashboardsecurestorage variables.
+                  //  Data_utils.updateLocalJson();
+
                   // update the screen
                   Data_utils.updateLocal(sensorData);
 
-                  updateJson(
-                      sensorData); // is to update the json file not complete yet.
-
                   // update the local files
                   // upload the data to server
+
+                  //SensorsData(sensorsData)).toJson();
 
                   Fluttertoast.showToast(msg: "data reception completed");
                   Fluttertoast.showToast(msg: sensorData.toString());
@@ -428,7 +490,7 @@ class _HomePageState extends State<HomePage> {
                         height: 40,
                         image: AssetImage('assets/icons/sync.png')),
                     Text(
-                      "November 04, 2021  02:30 AM",
+                      lastSampleDT,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,

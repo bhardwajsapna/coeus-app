@@ -1,5 +1,6 @@
 import 'package:coeus_v1/services/bleServices.dart';
 import 'package:coeus_v1/utils/const.dart';
+import 'package:coeus_v1/utils/dashboard_secure_storage.dart';
 import 'package:coeus_v1/widget/bluetoohSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,6 +166,19 @@ class _DiscoveryBluetoothDevice extends State<DiscoveryBluetoothDevice> {
 
                   Fluttertoast.showToast(
                     msg: "device initiated " + device.name + "***",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+
+                  var tempBatteryValue = readBatteryCharge();
+
+                  await DashboardSecureStorage.setBattery(tempBatteryValue[0]);
+                  Fluttertoast.showToast(
+                    msg: "Battery Charge " + tempBatteryValue + "***",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.CENTER,
                     timeInSecForIosWeb: 1,

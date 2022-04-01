@@ -43,6 +43,7 @@ class LoginStateProvider extends ChangeNotifier {
 
         // Create a new file. You can create any kind of file like txt, doc , json etc.
         File file = await File("${directory!.path}/tempRecords.json").create();
+
         print("file created");
 // Users can load any kind of files like txt, doc or json files as well
         String assetContent =
@@ -57,6 +58,7 @@ class LoginStateProvider extends ChangeNotifier {
         }
       } else {
         print("file already exist");
+        // await File("${directory!.path}/tempRecords.json").delete();
       }
     } catch (e) {
       _appState = AppState.LOGIN_FAILURE;

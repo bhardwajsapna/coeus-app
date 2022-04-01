@@ -28,7 +28,7 @@ class _OpenAppState extends State<OpenApp> {
     DashboardSecureStorage.setSleep(7.5);
     DashboardSecureStorage.setHeartRate(73);
     DashboardSecureStorage.setSpO2(98);
-    DashboardSecureStorage.setTemperature(37.5);
+    DashboardSecureStorage.setTemperature(98.2);
     // AdvancedSettingsSecureStorage.setSamplingCommunication("Only BLE");
     // AdvancedSettingsSecureStorage.setSamplingECG("256");
     // AdvancedSettingsSecureStorage.setSamplingTemperature("256");

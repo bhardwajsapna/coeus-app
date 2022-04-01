@@ -41,6 +41,10 @@ class MonthReading {
       DayReading todayReading = new DayReading(
           sampleDate: date, samples: [Sample(time: time, temp: value)]);
       this.tempValues.add(todayReading);
+
+      if (this.tempValues.length > 30) {
+        this.tempValues.removeAt(0);
+      }
     }
   }
 }

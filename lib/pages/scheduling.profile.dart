@@ -126,7 +126,12 @@ class _SchedulingProfilePageState extends State<SchedulingProfilePage> {
                 title: "Write Date",
                 onTapFunction: () {
                   DateTime now = DateTime.now();
-                  String time_now = (((now.millisecondsSinceEpoch) / 1000))
+                  print(now);
+
+                  print((now.timeZoneOffset.inMilliseconds));
+                  String time_now = (((now.millisecondsSinceEpoch +
+                              now.timeZoneOffset.inMilliseconds) /
+                          1000))
                       .toStringAsFixed(0);
                   print("time_now:" + time_now);
                   writeBLE_String_Data_service_100(time_now, '112');
