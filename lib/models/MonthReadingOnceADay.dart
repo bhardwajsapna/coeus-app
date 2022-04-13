@@ -3,25 +3,42 @@ import 'dart:convert';
 MonthReadingOnceADay convertJsonToMonthReadingOnceADay(String str) =>
     MonthReadingOnceADay.fromJson(json.decode(str));
 
-class MonthReadingOnceADay {
-  List<DayValues> dayValues;
+String convertMonthReadingOnceADayToJson(MonthReadingOnceADay data) =>
+    json.encode(data.toJson());
 
+class MonthReadingOnceADay {
   MonthReadingOnceADay({required this.dayValues});
 
-  factory MonthReadingOnceADay.fromJson(Map<String, dynamic> json) {
-    List<DayValues> dayValues = [];
-    json['dayValues'].forEach((v) {
-      dayValues.add(new DayValues.fromJson(v));
-    });
-    return MonthReadingOnceADay(dayValues: dayValues);
-  }
+  List<DayValues> dayValues;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.dayValues != null) {
-      data['dayValues'] = this.dayValues.map((v) => v.toJson()).toList();
+  factory MonthReadingOnceADay.fromJson(Map<String, dynamic> json) =>
+      MonthReadingOnceADay(
+          dayValues: List<DayValues>.from(
+              json["dayValues"].map((x) => DayValues.fromJson(x))));
+
+  Map<String, dynamic> toJson() => {
+        "dayValues": List<dynamic>.from(dayValues.map((e) => e.toJson())),
+      };
+
+  updateJsonDayData(date, value) {
+    if (date == "") {
+      return;
     }
-    return data;
+/*
+data value for the day is expected and not delta - was discussed with sriharsh.
+Therefore we are doing the direct assignment and not adding the steps.
+*/
+    if (this.dayValues[this.dayValues.length - 1].sampleDate == date) {
+      this.dayValues[this.dayValues.length - 1].stepsCount = value[0];
+      this.dayValues[this.dayValues.length - 1].sleepHrs = value[1];
+    } else {
+      DayValues todayValues = new DayValues(
+          sampleDate: date, stepsCount: value[0], sleepHrs: value[1]);
+      this.dayValues.add(todayValues);
+      if (this.dayValues.length > 30) {
+        this.dayValues.removeAt(0);
+      }
+    }
   }
 }
 

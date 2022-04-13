@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:coeus_v1/components/summary_card.dart';
 import 'package:coeus_v1/models/TempValue.dart';
+import 'package:coeus_v1/services/api.dart';
+
 import 'package:coeus_v1/services/bleServices.dart';
 import 'package:coeus_v1/utils/Data_utils.dart';
 import 'package:coeus_v1/utils/const.dart';
@@ -22,6 +24,8 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 // this csv can be removed for production.
 import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
+
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -47,11 +51,13 @@ class _HomePageState extends State<HomePage> {
     init();
   }
 
-  updateJson(_listData) async {
+  updateUIandSecuredStorage(_listData) async {
 // 03 feb for testing from csv data provided by sriharsha on 02 feb
 // if data has to be read from file and displayed on the screen then this has to be uncommented
 // if data  to be taken from the sensor and displayed on the screen then comment this portion till
 // _listData
+
+// 02 par now we have declared boolean to def the flow
 
     /*   debugPrint("reached updateJson");
     String filepath = 'assets/sensor_data_log.csv';
@@ -65,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     num hr = 0;
     num spo = 0;
     num sampleTime = 0;
-    DateTime sampleDate;
+    late DateTime sampleDate;
     String fileDate = "";
     String fileTime = "";
     _listData.forEach((element) {
@@ -102,7 +108,7 @@ class _HomePageState extends State<HomePage> {
       fileDate = DateFormat('dd-MM-yyyy').format(sampleDate);
       //debugPrint(fileDate.toString() + "file date");
 
-      fileTime = DateFormat('HH-mm').format(sampleDate);
+      fileTime = DateFormat('HH:mm:SS').format(sampleDate);
       //20 feb 22 - this is to update the refresh button.
       this.lastSampleDT = fileDate.toString() + " " + fileTime.toString();
     });
@@ -112,50 +118,7 @@ class _HomePageState extends State<HomePage> {
     await DashboardSecureStorage.setHeartRate(this.heartrate);
     await DashboardSecureStorage.setSpO2(this.spo2);
     await DashboardSecureStorage.setTemperature(this.temperature);
-
-/*updating the temp file . similarly we need to do for rest 
-*/
-    // Retrieve "External Storage Directory" for Android and "NSApplicationSupportDirectory" for iOS
-/*
-    Directory? interDire = Platform.isAndroid ? await getFilesDir() : null;
-
-    Directory? directory = Platform.isAndroid
-        ? await getExternalStorageDirectory()
-        : await getApplicationSupportDirectory();
-    print("dir path" + directory.toString());
-    //String fileName = "tempRecords.json";
-    String filePath = "${directory!.path}/tempRecords.json";
-    //  var fileName = 'assets/tempRecords.json';
-    var tempFile = File(filePath);
-
-    final String jsonString = await tempFile.readAsString();
-    // await rootBundle.loadString(fileName);
-
-    var fileData = convertJsonToTemp(jsonString);
-
-    // if we pass these values to the function we cannot access the content of file in the class
-    //we need to do the logic here.
-    // we can discuss on this 08 feb 22 - sreeni
-
-    fileData.updateJsonTempData(fileDate, fileTime, this.temperature.toInt());
-
-    var tempJson = convertTempToJson(fileData);
-    debugPrint(fileData.tempValues[30].sampleDate.toString() + " here");
-    debugPrint("after convert temp to json");
-    //final Directory directory =
-    //    await getApplicationDocumentsDirectory();
-    // try {
-    //final File file = File('assets/tempRecords.json');
-    await tempFile.writeAsString(tempJson);
-    /* } on Exception catch (_) {
-                  debugPrint("problem in file opening");
-                }
-*/
-    //
-
-    debugPrint("present file contents are ");
-    debugPrint(fileData.toString());
-    */
+    await DashboardSecureStorage.setLastUpdate(sampleDate);
   }
 
   Future init() async {
@@ -166,6 +129,7 @@ class _HomePageState extends State<HomePage> {
     heartrate = await DashboardSecureStorage.getHeartRate();
     spo2 = await DashboardSecureStorage.getSpO2();
     temperature = await DashboardSecureStorage.getTemperature();
+    lastSampleDT = await DashboardSecureStorage.getLastUpdate();
 
     setState(() {
       this.batteryValue = batteryValue;
@@ -175,6 +139,7 @@ class _HomePageState extends State<HomePage> {
       this.spo2 = spo2;
       this.temperature = temperature;
       this.username = username;
+      this.lastSampleDT = lastSampleDT;
     });
 
     debugPrint("every time or one time");
@@ -184,7 +149,7 @@ class _HomePageState extends State<HomePage> {
     print("we are here ");
     debugPrint("yaarr");
 
-    var url = "http://192.168.0.103:5000/userRegistration";
+    var url = "http://192.168.0.107:5000/userRegistration";
     Map jsonMap = {
       "firstName": "ss",
       "secondName": "ss",
@@ -428,44 +393,81 @@ class _HomePageState extends State<HomePage> {
                 //  updateJson(sensorData);
                 //  Data_utils.updateLocalJson(this.lastSampleDT);
 //------------------------------------------------------------
-                if (Constants.bleDevice != null) {
-                  // this above async and below await will ensure that intiateBLEdata function called and finished
-                  // and then readsensordata will be called.
-                  await initiateBLEData('110');
-                  Fluttertoast.showToast(msg: "data transfer initiated at 110");
-                  Fluttertoast.showToast(msg: "ready for data reception");
-                  sensorData = await readSensorsData('201');
-
-                  //process data
-                  print(sensorData.toString());
-                  print("above the read data from sensor");
-
-                  //processing
-                  sensorData = Data_utils.rawToProcessed(sensorData);
-
-                  updateJson(
-                      sensorData); // is to update the json file not complete yet.
-                  // 23 mar 22 - below function will update the temp, spo2 and heart rate json file of assets
-                  // so that same can be shown on graphs. Data will be taken from dashboardsecurestorage variables.
-                  //  Data_utils.updateLocalJson();
-
-                  // update the screen
-                  Data_utils.updateLocal(sensorData);
-
-                  // update the local files
-                  // upload the data to server
-
-                  //SensorsData(sensorsData)).toJson();
-
-                  Fluttertoast.showToast(msg: "data reception completed");
-                  Fluttertoast.showToast(msg: sensorData.toString());
+                if (Constants.isdataFromFile) {
+                  var temp = await Data_utils.dataFromFile() as List;
+                  sensorData = temp;
+                  debugPrint(
+                      sensorData.toString() + " here we get the file data");
+                  debugPrint("data read completed");
                 } else {
-                  Fluttertoast.showToast(
-                      msg: "Kindly connect the App with Device",
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
+                  if (Constants.bleDevice != null) {
+                    // this above async and below await will ensure that intiateBLEdata function called and finished
+                    // and then readsensordata will be called.
+                    await initiateBLEData('110');
+                    Fluttertoast.showToast(
+                        msg: "data transfer initiated at 110");
+                    Fluttertoast.showToast(msg: "ready for data reception");
+                    sensorData = await readSensorsData('201');
+
+                    //process data
+                    print(sensorData.toString());
+                    print("above the read data from sensor");
+
+                    //processing
+                    sensorData = Data_utils.rawToProcessed(sensorData);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: "Kindly connect the App with Device",
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
                 }
+                //update UI first
+                updateUIandSecuredStorage(sensorData);
+                // update the local files
+                print("before updastelocaljsonforgraph");
+                Data_utils.updateLocalJsonForGraph();
+                print("after updastelocaljsonforgraph");
+                // save data in local storage with date and time stamp
+                print("before savedatalocally");
+                Data_utils.saveDataLocally(sensorData);
+                print("after savedatalocally");
+                // update server with summary
+                /* 09 apr 22
+                There are 2 ways to update the server
+                1.  send the complete sensor data to server
+                2.  Send summary (dashboard data) to server
+                in option 1:
+                    data is huge. This would take sometime depending on network bandwidth.
+                    Once server receives data it needs to read and 
+                    extract information from the data received. 
+                    ONLY after this user dashboard gets updated.
+                in option 2:
+                 send the summary data to server immediately so that server gets update.
+                 In this there are 2 calls - one for sending summary to server and second is sending data
+                 once server receives summary - user dashboard gets updated.
+                 after server receives sensor data - data may be analysed.
+                */
+                var requestParams = {
+                  "HR": this.heartrate,
+                  "SPO2": this.spo2,
+                  "Temperature": this.temperature,
+                  "BatteryCharge": this.batteryValue,
+                  "Sleep": this.sleep,
+                  "Footsteps": this.footsteps,
+                  "Lastupdate": this.lastSampleDT,
+                };
+                late Future<http.Response> response;
+                print("before updateUserSampleReadingsAPIService");
+                response = updateUserSampleReadingsAPIService(requestParams);
+                print("after updateUserSampleReadingsAPIService");
+                // upload the data to server
+
+                //SensorsData(sensorsData)).toJson();
+
+                Fluttertoast.showToast(msg: "data reception completed");
+                Fluttertoast.showToast(msg: sensorData.toString());
               },
               child: Container(
                 padding: EdgeInsets.all(15.0),

@@ -103,3 +103,21 @@ Future<http.Response> updateAdvancedSettingsAPIService(requestParams) async {
     return (http.Response('Hello, world!', 200));
   }
 }
+
+Future<http.Response> updateUserSampleReadingsAPIService(requestParams) async {
+  print(requestParams);
+  String url = globalAccess.Constants.apiurl;
+  if (globalAccess.Constants.gotoServer) {
+    final response = await http.post(
+        Uri.parse('http://$url:5000/updateUserSampleReadings?userId=' +
+            globalAccess.Constants.userId),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestParams));
+    print(response.body);
+    return response;
+  } else {
+    return (http.Response('server not updated', 200));
+  }
+}

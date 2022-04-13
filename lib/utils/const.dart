@@ -4,7 +4,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 class Constants {
   // Name
   static String appName = "Rhinestone";
-  static String apiurl = "192.168.71.49"; //0.103"; //173.49";
+  static String apiurl = "192.168.0.107"; //71.49"; //0.103"; //173.49";
 
   // Material Design Color
   static Color lightPrimary = Color(0xFFFFDAC1);
@@ -108,6 +108,10 @@ List of services for BLE communication
   static String ctsCharacteristic = "0000282b-0000-1000-8000-00805f9b34fb";
 // for implementation of CTS
 
+/*02 Apr 22 => if data to be read from sensor or from file*/
+
+  static bool isdataFromFile = false;
+
   static late DiscoveredDevice bleDevice;
 
   static ThemeData lighTheme(BuildContext context) {
@@ -138,6 +142,6 @@ TODO list
 they are to be initialised during login page after successfull login.
 These data are saved in secure storage. 
 */
-  static String userId = '611ab9bc5322c3653e8064b3';
+  static String userId = '6253249cee722eb8c2d1b166';
   static String deviceId = '123';
 }

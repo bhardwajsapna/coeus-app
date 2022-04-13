@@ -23,12 +23,14 @@ class _OpenAppState extends State<OpenApp> {
   }
 
   static Future init() async {
-    DashboardSecureStorage.setBattery(50);
+    //13 apr 22 - so that dash board display last reading
+    /* DashboardSecureStorage.setBattery(50);
     DashboardSecureStorage.setFootsteps(3123);
     DashboardSecureStorage.setSleep(7.5);
     DashboardSecureStorage.setHeartRate(73);
     DashboardSecureStorage.setSpO2(98);
     DashboardSecureStorage.setTemperature(98.2);
+    */
     // AdvancedSettingsSecureStorage.setSamplingCommunication("Only BLE");
     // AdvancedSettingsSecureStorage.setSamplingECG("256");
     // AdvancedSettingsSecureStorage.setSamplingTemperature("256");

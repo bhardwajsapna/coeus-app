@@ -50,6 +50,7 @@ class LoginStateProvider extends ChangeNotifier {
             await rootBundle.loadString('assets/tempRecords.json');
         print("file content" + assetContent);
         await file.writeAsString(assetContent);
+
         print("write to new file");
         if ((await File("${directory!.path}/tempRecords.json").exists())) {
           print("file copied");
@@ -59,6 +60,58 @@ class LoginStateProvider extends ChangeNotifier {
       } else {
         print("file already exist");
         // await File("${directory!.path}/tempRecords.json").delete();
+      }
+//12 apr 22 added file copying for other files viz spo2, bpm and sleep n stepcount
+
+      if (!(await File("${directory!.path}/bpmRecords.json").exists())) {
+        File filebpm =
+            await File("${directory!.path}/bpmRecords.json").create();
+
+        String assetContentbpm =
+            await rootBundle.loadString('assets/bpmRecords.json');
+        await filebpm.writeAsString(assetContentbpm);
+
+        if ((await File("${directory!.path}/bpmRecords.json").exists())) {
+          print("bpm file copied");
+        } else {
+          print("bpm file not copied");
+        }
+      } else {
+        print("bpm file already exist");
+      }
+
+      if (!(await File("${directory!.path}/spo2Records.json").exists())) {
+        File filespo2 =
+            await File("${directory!.path}/spo2Records.json").create();
+        String assetContentspo2 =
+            await rootBundle.loadString('assets/spo2Records.json');
+        await filespo2.writeAsString(assetContentspo2);
+
+        if ((await File("${directory!.path}/spo2Records.json").exists())) {
+          print("spo2 file copied");
+        } else {
+          print("spo2 file not copied");
+        }
+      } else {
+        print("spo2 file already exist");
+      }
+
+      if (!(await File("${directory!.path}/stepsSleepRecords.json").exists())) {
+        File filestepssleep =
+            await File("${directory!.path}/stepsSleepRecords.json").create();
+
+        String assetContentSS =
+            await rootBundle.loadString('assets/stepsSleepRecords.json');
+        await filestepssleep.writeAsString(assetContentSS);
+
+        if ((await File("${directory!.path}/stepsSleepRecords.json")
+            .exists())) {
+          print("ss file copied");
+        } else {
+          print("ss file not copied");
+        }
+      } else {
+        print("ss file already exist");
       }
     } catch (e) {
       _appState = AppState.LOGIN_FAILURE;

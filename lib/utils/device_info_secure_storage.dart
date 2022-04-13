@@ -33,13 +33,13 @@ class DeviceInfoSecureStorage {
 
   static Future setLastUpdated(DateTime val) async {
     final temp = val.toIso8601String();
-    print("inuserseecure LastUpdated:" + temp);
+    print("in user secure LastUpdated:" + temp);
     await _storage.write(key: _keyLastUpdated, value: temp);
   }
 
   static Future<DateTime?> getLastUpdated() async {
     String? temp = await _storage.read(key: _keyLastUpdated);
-    print("outuserseecure LastUpdated:" + temp!);
+    print("out use secure LastUpdated:" + temp!);
     if (temp == null) {
       return null;
     } else {

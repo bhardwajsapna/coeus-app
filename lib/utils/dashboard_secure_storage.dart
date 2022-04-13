@@ -1,5 +1,6 @@
 //https://github.com/JohannesMilke/secure_storage_example/blob/master/lib/utils/user_secure_storage.dart
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 
 class DashboardSecureStorage {
   static final _storage = FlutterSecureStorage();
@@ -11,6 +12,20 @@ class DashboardSecureStorage {
   static const _keySpO2 = 'spo2';
   static const _keyTemperature = 'temperature';
   static const _keyECG = 'ECG';
+  static const _keyLastUpdate = 'lastupdate';
+
+  static Future setLastUpdate(DateTime lastDT) async {
+    await _storage.write(key: _keyLastUpdate, value: lastDT.toString());
+    print("in last update:" + lastDT.toString());
+  }
+
+  static Future getLastUpdate() async {
+    String? lastDT = await _storage.read(key: _keyLastUpdate);
+    print("out last update:" + lastDT!);
+
+    return (DateFormat('dd-MM-yyyy HH-mm-ss').format(DateTime.parse(lastDT)))
+        .toString();
+  }
 
   static Future setBattery(int battery) async {
     await _storage.write(key: _keyBattery, value: battery.toString());

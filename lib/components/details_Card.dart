@@ -119,21 +119,23 @@ class _Detailed_CardState extends State<Detailed_Card> {
   }
 
   dynamic render_chart(int ndays) async {
-   Directory? directory = Platform.isAndroid
+    Directory? directory = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationSupportDirectory();
 
     //baseDir = "assets";
     baseDir = "${directory!.path}";
-    
+
     if (true) {
       //(isfirstLoading) {
       String fileName = "";
       switch (widget.title) {
         case "Temperature":
           fileName = baseDir + '/tempRecords.json';
-          minY = 25;
-          maxY = 50;
+          minY = 80;
+          //changed as we are displaying def F 25;
+          maxY = 110;
+          //changed as we are displaying def F 50;
           break;
         case "SpO2":
           fileName = baseDir + '/spo2Records.json';
@@ -153,9 +155,9 @@ class _Detailed_CardState extends State<Detailed_Card> {
         default:
           fileName = baseDir + '/tempRecords.json';
       }
-      
-     // String jsonData = await rootBundle.loadString(fileName);
-      
+
+      // String jsonData = await rootBundle.loadString(fileName);
+
       // 27 mar - reading file data from dir
       debugPrint(fileName + " n days =" + ndays.toString());
       File jsonFile = new File(fileName);
@@ -167,8 +169,8 @@ class _Detailed_CardState extends State<Detailed_Card> {
       isfirstLoading = false;
       // });
     }
-    
-   // setState(() {
+
+    // setState(() {
     seriesList = [];
     seriesList.add(new charts.Series<Sensor, int>(
       id: 'LineGraph',
