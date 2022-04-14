@@ -4,8 +4,8 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 class Constants {
   // Name
   static String appName = "Rhinestone";
-  static String apiurl = "192.168.0.107"; //71.49"; //0.103"; //173.49";
-
+  static String apiurl = "192.168.1.30";
+  //0.107"; //71.49"; //0.103"; //173.49";
   // Material Design Color
   static Color lightPrimary = Color(0xFFFFDAC1);
   static Color lightAccent = Color(0xFFFFDAC1);
@@ -50,7 +50,7 @@ class Constants {
 /* 16 jan 22
  this is done while doing ble services */
   static FlutterReactiveBle flutterReactiveBle = FlutterReactiveBle();
-  static bool gotoServer = false;
+  static bool gotoServer = true;
   static String fileUrl = "http://192.168.173.49:5000/file/App_update.bin";
 /*
 28 Nov 21
@@ -142,6 +142,5 @@ TODO list
 they are to be initialised during login page after successfull login.
 These data are saved in secure storage. 
 */
-  static String userId = '6253249cee722eb8c2d1b166';
   static String deviceId = '123';
 }

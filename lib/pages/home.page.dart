@@ -149,7 +149,8 @@ class _HomePageState extends State<HomePage> {
     print("we are here ");
     debugPrint("yaarr");
 
-    var url = "http://192.168.0.107:5000/userRegistration";
+    var url = "http://" + Constants.apiurl + ":5000/userRegistration";
+    print("callAPI:url:" + url);
     Map jsonMap = {
       "firstName": "ss",
       "secondName": "ss",
@@ -191,6 +192,33 @@ class _HomePageState extends State<HomePage> {
     httpClient.close();
     print(reply);
     return reply;
+  }
+
+  updateBatteryStatus() async {
+    Fluttertoast.showToast(
+      msg: "Battery Charge clicked",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+    var tempBattery = await readBLEData("100", Constants.character113);
+    // readBatteryCharge();
+    setState(() {
+      this.batteryValue = tempBattery[0];
+    });
+    await DashboardSecureStorage.setBattery(this.batteryValue);
+    Fluttertoast.showToast(
+      msg: "Battery Charge " + tempBattery.toString() + "***",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   @override
@@ -302,32 +330,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: InkWell(
                         onTap: () async {
-                          Fluttertoast.showToast(
-                            msg: "Battery Charge clicked",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                          var tempBattery =
-                              await readBLEData("100", Constants.character113);
-                          // readBatteryCharge();
-                          setState(() {
-                            this.batteryValue = tempBattery[0];
-                          });
-                          Fluttertoast.showToast(
-                            msg: "Battery Charge " +
-                                tempBattery.toString() +
-                                "***",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
+                          updateBatteryStatus();
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,

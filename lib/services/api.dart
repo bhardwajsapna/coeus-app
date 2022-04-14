@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:coeus_v1/utils/user_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:coeus_v1/utils/const.dart' as globalAccess;
@@ -36,9 +37,9 @@ Future<http.Response> updateProfileAPIService(requestParams) async {
   print(requestParams);
   String url = globalAccess.Constants.apiurl;
   if (globalAccess.Constants.gotoServer) {
+    String? userId = await UserSecureStorage.getUserID();
     final response = await http.post(
-        Uri.parse('http://$url:5000/updateUserProfile?userId=' +
-            globalAccess.Constants.userId),
+        Uri.parse('http://$url:5000/updateUserProfile?userId=' + userId!),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -54,9 +55,9 @@ Future<http.Response> updateEmergencyContactAPIService(requestParams) async {
   print(requestParams);
   String url = globalAccess.Constants.apiurl;
   if (globalAccess.Constants.gotoServer) {
+    String? userId = await UserSecureStorage.getUserID();
     final response = await http.post(
-        Uri.parse('http://$url:5000/updateEmergencyContact?userId=' +
-            globalAccess.Constants.userId),
+        Uri.parse('http://$url:5000/updateEmergencyContact?userId=' + userId!),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -72,9 +73,9 @@ Future<http.Response> updateCaregiverDetailsAPIService(requestParams) async {
   print(requestParams);
   String url = globalAccess.Constants.apiurl;
   if (globalAccess.Constants.gotoServer) {
+    String? userId = await UserSecureStorage.getUserID();
     final response = await http.post(
-        Uri.parse('http://$url:5000/updateCaregiverDetails?userId=' +
-            globalAccess.Constants.userId),
+        Uri.parse('http://$url:5000/updateCaregiverDetails?userId=' + userId!),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -108,9 +109,26 @@ Future<http.Response> updateUserSampleReadingsAPIService(requestParams) async {
   print(requestParams);
   String url = globalAccess.Constants.apiurl;
   if (globalAccess.Constants.gotoServer) {
+    String? userId = await UserSecureStorage.getUserID();
     final response = await http.post(
-        Uri.parse('http://$url:5000/updateUserSampleReadings?userId=' +
-            globalAccess.Constants.userId),
+        Uri.parse(
+            'http://$url:5000/updateUserSampleReadings?userId=' + userId!),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestParams));
+    print(response.body);
+    return response;
+  } else {
+    return (http.Response('server not updated', 200));
+  }
+}
+
+Future<http.Response> appLogin(requestParams) async {
+  print(requestParams);
+  String url = globalAccess.Constants.apiurl;
+  if (globalAccess.Constants.gotoServer) {
+    final response = await http.post(Uri.parse('http://$url:5000/appLogin'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

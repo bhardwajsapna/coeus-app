@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:coeus_v1/services/api.dart';
+import 'package:coeus_v1/utils/dashboard_secure_storage.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:coeus_v1/widget/button.dart';
@@ -8,6 +12,7 @@ import 'package:coeus_v1/widget/textLogin.dart';
 import 'dashboard.page.dart';
 import 'package:coeus_v1/utils/const.dart';
 import 'package:coeus_v1/utils/user_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   String action = "";
@@ -35,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future init() async {
+    print("=----widget-action----" + widget.action);
     if (widget.action == 'logout') {
       await UserSecureStorage.logOut();
     } else {
@@ -43,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         this.uname = uname;
         this.password = password;
+        print("uname:" + this.uname!);
       });
     }
   }
@@ -69,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
   void onLoginSubmit() async {
     if (_formKey.currentState!.validate()) {
       bool isvalid = false;
+      // check from internal storage
       if (this.uname == controllerUserName.text) {
         if (this.password == controllerPassword.text) {
           isvalid = true;
@@ -79,9 +87,40 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         isvalid = false;
       }
+      // check from server
+      if (isvalid == false) {
+        var requestParams = {
+          "userName": controllerUserName.text,
+          "password": controllerPassword.text
+        };
+        http.Response response;
+        response = await appLogin(requestParams);
+        print(response.body.toString());
+        var decodedJson = jsonDecode(response.body);
+        print(decodedJson);
+        print(decodedJson["result"]);
+        if (decodedJson["result"] == "success") {
+          isvalid = true;
+          await UserSecureStorage.setFirstName(decodedJson["firstName"]);
+          await UserSecureStorage.setUserID(decodedJson["userId"]);
+          await UserSecureStorage.setPassword(controllerPassword.text);
+          await UserSecureStorage.setEmailId(controllerUserName.text);
+
+          print(await UserSecureStorage.getFirstName());
+
+          //14 apr 22 - so that dash board display dummy reading
+          await DashboardSecureStorage.setBattery(50);
+          await DashboardSecureStorage.setFootsteps(3123);
+          await DashboardSecureStorage.setSleep(7.5);
+          await DashboardSecureStorage.setHeartRate(73);
+          await DashboardSecureStorage.setSpO2(98);
+          await DashboardSecureStorage.setTemperature(98.2);
+          var lastDT = DateTime.now();
+          print("last dt" + lastDT.toString());
+          await DashboardSecureStorage.setLastUpdate(lastDT);
+        }
+      }
       if (isvalid) {
-        UserSecureStorage.getUserID()
-            .then((value) => Constants.userId = value!);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Dashboard()));
       } else {

@@ -1,652 +1,477 @@
 {
     "readValues": [
                 {
-            "sampleDate": "26-07-2021",
+            "sampleDate": "26-03-2022",
             "samples": [
                 {
                     "time": "01-24",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "01-54",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "02-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "02-54",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "03-24",
-                    "value": 39
+                    "value": 89
                 }
             ]
         },
         {
-            "sampleDate": "27-07-2021",
+            "sampleDate": "27-03-2022",
             "samples": [
                 {
                     "time": "03-54",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "04-24",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "04-54",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "05-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "05-54",
-                    "value": 39
+                    "value": 89
                 }
             ]
         },
         {
-            "sampleDate": "28-07-2021",
+            "sampleDate": "28-03-2022",
             "samples": [
                 {
                     "time": "06-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "06-54",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "07-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "07-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "08-24",
-                    "value": 37
+                    "value": 87
                 }
             ]
         },
         {
-            "sampleDate": "29-07-2021",
+            "sampleDate": "29-03-2022",
             "samples": [
                 {
                     "time": "08-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "09-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "09-54",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "10-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "10-54",
-                    "value": 40
+                    "value": 90
                 }
             ]
         },
         {
-            "sampleDate": "30-07-2021",
+            "sampleDate": "30-03-2022",
             "samples": [
                 {
                     "time": "11-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "11-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "12-24",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "12-54",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "13-24",
-                    "value": 35
+                    "value": 85
                 }
             ]
         },
         {
-            "sampleDate": "31-07-2021",
+            "sampleDate": "31-03-2022",
             "samples": [
                 {
                     "time": "13-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "14-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "14-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "15-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "15-54",
-                    "value": 34
+                    "value": 84
                 }
             ]
         },
         {
-            "sampleDate": "01-08-2021",
+            "sampleDate": "01-04-2022",
             "samples": [
                 {
                     "time": "16-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "16-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "17-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "17-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "18-24",
-                    "value": 39
+                    "value": 89
                 }
             ]
         },
         {
-            "sampleDate": "02-08-2021",
+            "sampleDate": "02-04-2022",
             "samples": [
                 {
                     "time": "18-54",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "19-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "19-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "20-24",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "20-54",
-                    "value": 38
+                    "value": 88
                 }
             ]
         },
         {
-            "sampleDate": "03-08-2021",
+            "sampleDate": "03-04-2022",
             "samples": [
                 {
                     "time": "21-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "21-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "22-24",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "22-54",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "23-24",
-                    "value": 39
+                    "value": 89
                 }
             ]
         },
         {
-            "sampleDate": "04-08-2021",
+            "sampleDate": "04-04-2022",
             "samples": [
                 {
                     "time": "23-54",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "00-24",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "00-54",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "01-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "01-54",
-                    "value": 36
+                    "value": 86
                 }
             ]
         },
         {
-            "sampleDate": "05-08-2021",
+            "sampleDate": "05-04-2022",
             "samples": [
                 {
                     "time": "02-24",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "02-54",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "03-24",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "03-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "04-24",
-                    "value": 40
+                    "value": 90
                 }
             ]
         },
         {
-            "sampleDate": "06-08-2021",
+            "sampleDate": "06-04-2022",
             "samples": [
                 {
                     "time": "04-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "05-24",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "05-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "06-24",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "06-54",
-                    "value": 38
+                    "value": 88
                 }
             ]
         },
         {
-            "sampleDate": "07-08-2021",
+            "sampleDate": "07-04-2022",
             "samples": [
                 {
                     "time": "07-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "07-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "08-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "08-54",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "09-24",
-                    "value": 37
+                    "value": 87
                 }
             ]
         },
         {
-            "sampleDate": "08-08-2021",
+            "sampleDate": "08-04-2022",
             "samples": [
                 {
                     "time": "09-54",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "10-24",
-                    "value": 38
+                    "value": 88
                 },
                 {
                     "time": "10-54",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "11-24",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "11-54",
-                    "value": 40
+                    "value": 90
                 }
             ]
         },
         {
-            "sampleDate": "09-08-2021",
+            "sampleDate": "09-04-2022",
             "samples": [
                 {
                     "time": "12-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "12-54",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "13-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "13-54",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "14-24",
-                    "value": 35
+                    "value": 85
                 }
             ]
         },
         {
-            "sampleDate": "10-08-2021",
+            "sampleDate": "10-04-2022",
             "samples": [
                 {
                     "time": "14-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "15-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "15-54",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "16-24",
-                    "value": 34
+                    "value": 84
                 },
                 {
                     "time": "16-54",
-                    "value": 36
+                    "value": 86
                 }
             ]
         },
         {
-            "sampleDate": "11-08-2021",
+            "sampleDate": "11-04-2022",
             "samples": [
                 {
                     "time": "17-24",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "17-54",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "18-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "18-54",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "19-24",
-                    "value": 39
+                    "value": 89
                 }
             ]
         },
         {
-            "sampleDate": "12-08-2021",
+            "sampleDate": "12-04-2022",
             "samples": [
                 {
                     "time": "19-54",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "20-24",
-                    "value": 37
+                    "value": 87
                 },
                 {
                     "time": "20-54",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "21-24",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "21-54",
-                    "value": 37
+                    "value": 87
                 }
             ]
         },
         {
-            "sampleDate": "13-08-2021",
+            "sampleDate": "13-04-2022",
             "samples": [
                 {
                     "time": "22-24",
-                    "value": 35
+                    "value": 85
                 },
                 {
                     "time": "22-54",
-                    "value": 36
+                    "value": 86
                 },
                 {
                     "time": "23-24",
-                    "value": 39
+                    "value": 89
                 },
                 {
                     "time": "23-54",
-                    "value": 40
+                    "value": 90
                 },
                 {
                     "time": "00-24",
-                    "value": 38
-                }
-            ]
-        },
-        {
-            "sampleDate": "14-08-2021",
-            "samples": [
-                {
-                    "time": "00-54",
-                    "value": 34
-                },
-                {
-                    "time": "01-24",
-                    "value": 39
-                },
-                {
-                    "time": "01-54",
-                    "value": 38
-                },
-                {
-                    "time": "02-24",
-                    "value": 40
-                },
-                {
-                    "time": "02-54",
-                    "value": 38
-                }
-            ]
-        },
-        {
-            "sampleDate": "15-08-2021",
-            "samples": [
-                {
-                    "time": "03-24",
-                    "value": 39
-                },
-                {
-                    "time": "03-54",
-                    "value": 35
-                },
-                {
-                    "time": "04-24",
-                    "value": 37
-                },
-                {
-                    "time": "04-54",
-                    "value": 37
-                },
-                {
-                    "time": "05-24",
-                    "value": 36
-                }
-            ]
-        },
-        {
-            "sampleDate": "16-08-2021",
-            "samples": [
-                {
-                    "time": "05-54",
-                    "value": 37
-                },
-                {
-                    "time": "06-24",
-                    "value": 37
-                },
-                {
-                    "time": "06-54",
-                    "value": 36
-                },
-                {
-                    "time": "07-24",
-                    "value": 38
-                },
-                {
-                    "time": "07-54",
-                    "value": 35
-                }
-            ]
-        },
-        {
-            "sampleDate": "17-08-2021",
-            "samples": [
-                {
-                    "time": "08-24",
-                    "value": 38
-                },
-                {
-                    "time": "08-54",
-                    "value": 38
-                },
-                {
-                    "time": "09-24",
-                    "value": 37
-                },
-                {
-                    "time": "09-54",
-                    "value": 40
-                },
-                {
-                    "time": "10-24",
-                    "value": 34
-                }
-            ]
-        },
-        {
-            "sampleDate": "18-08-2021",
-            "samples": [
-                {
-                    "time": "10-54",
-                    "value": 38
-                },
-                {
-                    "time": "11-24",
-                    "value": 35
-                },
-                {
-                    "time": "11-54",
-                    "value": 37
-                },
-                {
-                    "time": "12-24",
-                    "value": 38
-                },
-                {
-                    "time": "12-54",
-                    "value": 37
-                }
-            ]
-        },
-        {
-            "sampleDate": "19-08-2021",
-            "samples": [
-                {
-                    "time": "13-24",
-                    "value": 36
-                },
-                {
-                    "time": "13-54",
-                    "value": 40
-                },
-                {
-                    "time": "14-24",
-                    "value": 34
-                },
-                {
-                    "time": "14-54",
-                    "value": 39
-                },
-                {
-                    "time": "15-24",
-                    "value": 36
-                }
-            ]
-        },
-        {
-            "sampleDate": "20-08-2021",
-            "samples": [
-                {
-                    "time": "13-24",
-                    "value": 36
-                },
-                {
-                    "time": "13-54",
-                    "value": 40
-                },
-                {
-                    "time": "14-24",
-                    "value": 34
-                },
-                {
-                    "time": "14-54",
-                    "value": 39
-                },
-                {
-                    "time": "15-24",
-                    "value": 36
+                    "value": 88
                 }
             ]
         }
